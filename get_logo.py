@@ -10,9 +10,8 @@ soup = BeautifulSoup(html, 'html.parser')
 link = None
 for meta in soup.find_all('meta'):
     attributes = meta.attrs
-    if 'property' in attributes:
-        if attributes['property'] == 'og:image':
-            link = meta['content']
-            break
+    if 'property' in attributes and attributes['property'] == 'og:image':
+        link = meta['content']
+        break
 
 print(link if link else 'Could not resolve logo...')
