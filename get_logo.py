@@ -1,12 +1,18 @@
 from __future__ import print_function
-import re
 from sys import argv
+from bs4 import BeautifulSoup
 import urllib
 
 file = urllib.urlopen(argv[1])
-reversed_text = file.read()[::-1]
+html = file.read()
+soup = BeautifulSoup(html, 'html.parser')
 
-search_result = re.search(r'("oci\..*?")', reversed_text)
-ico_url = search_result.group(0)[::-1] if search_result else 'Could not resolve a logo...'
+link = None
+for meta in soup.find_all('meta'):
+    attributes = meta.attrs
+    if 'property' in attributes:
+        if attributes['property'] == 'og:image':
+            link = meta['content']
+            break
 
-print(ico_url)
+print(link if link else 'Could not resolve logo...')
